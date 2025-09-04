@@ -1,0 +1,6 @@
+# Création d'un fichier chiffré
+ansible-vault create group_vars/all/vault.yml
+# Édition d'un fichier chiffré
+ansible-vault edit group_vars/all/vault.yml
+# Exécution avec déchiffrement
+ansible-playbook --ask-vault-pass site.yml
