@@ -4,30 +4,32 @@ Ceci est un exemple de définition d'infrastructure cloud aws avec Terraform et 
 ######################################################################################
 ###########  Structure du projet:  ###########
 iac_terraform_ansible/
-├── ansible/
-│   ├── group_vars/
-│   │   └── all/
+├── ansible
+│   ├── group_vars
+│   │   └── all
+│   │       ├── vault_cmd.txt
 │   │       └── vault.yml
-│   └── playbooks/
-│       ├── configure-webserver.yml
-│       └── site.yml    # Playbook principal
-├── group_vars/
-├── host_vars/
-├── inventories/
+│   ├── inventories
+│   │   └── hosts
+│   ├── playbooks
+│   │   ├── configure-webserver.yml
+│   │   ├── site.yml
+│   │   └── templates
+│   │       ├── index.html.j2
+│   │       └── nginx-site.conf.j2
+│   └── roles
+│       └── common
+│           └── tasks
+│               └── main.yml
+├── apersonnaliser.txt
 ├── README.md
-├── roles/
-│   └── common/
-│       └── tasks/
-│           └── main.yml
-├── scripts/
-│   └── deploy.sh       # Script d'intégration
-├── templates/
-│   ├── index.html.j2
-│   └── nginx-site.conf.j2
-└── terraform/          # Infrastructure
+├── scripts
+│   └── deploy.sh
+└── terraform
     ├── backend.tf
     ├── infrastructure.tf
-    └── main.tf
+    ├── main.tf
+    └── user_data.sh
 
 
 #######Commandes utiles:############
