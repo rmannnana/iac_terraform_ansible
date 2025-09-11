@@ -1,0 +1,38 @@
+---
+- name: Creation de l'utilisateur application
+  user:
+    name: "{{ app_user }}"
+    system: yes
+    shell: /bin/bash
+    home: "{{ app_dir }}"
+    create_home: yes
+
+- name: Installation des paquets de base
+  apt:
+    name:
+      - curl
+      - wget
+      - unzip
+      - htop
+      - fail2ban
+      - ufw
+    state: present
+
+- name: Configuration du pare-feu UFW
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop:
+    - ssh
+    - http
+    - https
+
+- name: Activation du pare-feu
+  ufw:
+    state: enabled
+
+- name: Configuration de fail2ban
+  template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+  notify: restart fail2ban

@@ -1,0 +1,76 @@
+---
+- name: Configuration d'un serveur web avec nginx
+  hosts: webservers
+  become: yes
+  
+  vars:
+    nginx_port: 80
+    website_title: "Mon Premier Site avec Ansible"
+  
+  tasks:
+    - name: Mise a jour du cache des paquets
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    
+    - name: Installation de nginx
+      apt:
+        name: nginx
+        state: present
+    
+    - name: Demarrage et activation de nginx
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+    
+    - name: Creation du repertoire web personnalise
+      file:
+        path: /var/www/monsite
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+    
+    - name: Deploiement de la page d'accueil personnalisee
+      template:
+        src: templates/index.html.j2
+        dest: /var/www/monsite/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+      notify: restart nginx
+    
+    - name: Configuration du virtual host nginx
+      template:
+        src: templates/nginx-site.conf.j2
+        dest: /etc/nginx/sites-available/monsite
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart nginx
+    
+    - name: Activation du site
+      file:
+        src: /etc/nginx/sites-available/monsite
+        dest: /etc/nginx/sites-enabled/monsite
+        state: link
+      notify: restart nginx
+    
+    - name: Desactivation du site par defaut
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+    
+    - name: Verification de la configuration nginx
+      command: nginx -t
+      register: nginx_syntax
+      changed_when: false
+      failed_when: nginx_syntax.rc != 0
+  
+  handlers:
+    - name: restart nginx
+      systemd:
+        name: nginx
+        state: restarted

@@ -1,0 +1,35 @@
+#terraform/main.tf
+ - Region aws_region aws
+    variable "aws_region" {
+        default     = "eu-west-1"
+    }
+ - Nom de la paire de cle
+    key_name = "my-key-pair"
+
+
+#terraform/backend.tf (il faut creer ces ressources sur la console AWS)
+ - bucket         = "mon-terraform-state-bucket"
+ - key            = "infrastructure/terraform.tfstate" (ca c'est deja bon)
+ - region         = "eu-west-1"
+ - dynamodb_table = "terraform-state-lock"
+
+
+#terraform/infrastructure.tf
+ - Nom et environnement du projet:
+    variable "environment" {   # Environnement
+        default     = "dev"
+    }
+
+    variable "project_name" {   # Nom du projet
+        default     = "webapp"
+    }
+
+ - Nom de la paire de cle
+    key_name = "my-key-pair"
+
+ ------------------ Verifier la presence de user_data.sh et aws_db_instance.postgres
+
+
+#ansible/playbooks/site.yml
+ ------------------ Les roles verifier que nginx, webapp et monitoring existent
+

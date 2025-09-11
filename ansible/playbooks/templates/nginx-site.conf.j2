@@ -1,0 +1,15 @@
+server {
+    listen {{ nginx_port }};
+    server_name _;
+
+    root /var/www/monsite;
+    index index.html;
+
+    location / {
+    try_files $uri $uri/ =404;
+    }
+
+    # Logs
+    access_log /var/log/nginx/monsite.access.log;
+    error_log /var/log/nginx/monsite.error.log;
+}
